@@ -85,7 +85,38 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+        $validated = $request->validate([
+            'name'        => 'required|string|max:255',
+            'title'       => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'price'       => 'required|numeric|min:0',
+            'stock'       => 'required|integer|min:0',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
+        ]);
+
+        if ($request->hasFile('image')) {
+            // Remove old image if stored locally
+            if ($product->image && File::exists(public_path($product->image))) {
+                File::delete(public_path($product->image));
+            }
+
+            $destinationPath = public_path('uploads/products');
+            if (!File::exists($destinationPath)) {
+                File::makeDirectory($destinationPath, 0755, true);
+            }
+
+            $image = $request->file('image');
+            $fileName = time() . '_' . $image->getClientOriginalName();
+            $image->move($destinationPath, $fileName);
+
+            $validated['image'] = 'uploads/products/' . $fileName;
+        } else {
+            unset($validated['image']);
+        }
+
+        $product->update($validated);
+
+        return redirect()->route('products.index');
     }
 
     /**
@@ -93,6 +124,10 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+        if ($product->image && File::exists(public_path($product->image))) {
+            File::delete(public_path($product->image));
+        }
+
         $product->delete();
         return redirect()->back();
     }

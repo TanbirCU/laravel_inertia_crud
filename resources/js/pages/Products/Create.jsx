@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useForm } from "@inertiajs/react";
+import Swal from "sweetalert2";
 
 export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
@@ -36,6 +37,18 @@ export default function Create() {
         e.preventDefault();
         post("/products", {
             forceFormData: true,
+            onSuccess: () => {
+                Swal.fire({
+                    title: "Created!",
+                    text: "Product created successfully!",
+                    icon: "success",
+                    timer: 1800,
+                    showConfirmButton: false,
+                    customClass: {
+                        popup: "rounded-2xl shadow-2xl border border-slate-100",
+                    },
+                });
+            },
         });
     };
 
