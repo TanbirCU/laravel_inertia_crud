@@ -8,20 +8,35 @@ export default function Create() {
         description: "",
         price: "",
         stock: 0,
-        image: "",
+        image: null,
     });
 
-    const [imagePreview, setImagePreview] = useState("");
+    const [preview, setPreview] = useState(null);
+    const [fileDetails, setFileDetails] = useState(null);
 
     const handleImageChange = (e) => {
-        const value = e.target.value;
-        setData("image", value);
-        setImagePreview(value);
+        const file = e.target.files[0];
+        if (file) {
+            setData("image", file);
+            setPreview(URL.createObjectURL(file));
+            setFileDetails({
+                name: file.name,
+                size: (file.size / 1024).toFixed(1) + " KB",
+            });
+        }
+    };
+
+    const handleRemoveImage = () => {
+        setData("image", null);
+        setPreview(null);
+        setFileDetails(null);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post("/products");
+        post("/products", {
+            forceFormData: true,
+        });
     };
 
     return (
@@ -133,37 +148,67 @@ export default function Create() {
                             {errors.stock && <p className="text-xs text-rose-500 mt-1 font-medium">{errors.stock}</p>}
                         </div>
 
-                        {/* Image URL */}
+                        {/* File Upload Image Selection & Live Preview */}
                         <div className="md:col-span-2">
                             <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                                Image URL <span className="text-slate-400 font-normal normal-case">(Optional)</span>
+                                Product Image File <span className="text-slate-400 font-normal normal-case">(Select image file from device)</span>
                             </label>
-                            <input
-                                type="url"
-                                value={data.image}
-                                onChange={handleImageChange}
-                                placeholder="https://images.unsplash.com/photo-..."
-                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-medium text-slate-800 transition-all duration-200 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                            />
-                            {errors.image && <p className="text-xs text-rose-500 mt-1 font-medium">{errors.image}</p>}
 
-                            {/* Image Live Preview */}
-                            {imagePreview && (
-                                <div className="mt-3 p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-3">
-                                    <img
-                                        src={imagePreview}
-                                        alt="Preview"
-                                        className="w-16 h-16 object-cover rounded-lg border border-slate-200 shadow-sm"
-                                        onError={(e) => {
-                                            e.target.style.display = "none";
-                                        }}
-                                    />
-                                    <div>
-                                        <p className="text-xs font-semibold text-slate-700">Image Preview</p>
-                                        <p className="text-[11px] text-slate-400 truncate max-w-xs">{imagePreview}</p>
+                            {!preview ? (
+                                <label className="flex flex-col items-center justify-center w-full h-36 px-4 transition-all duration-200 border-2 border-slate-200 border-dashed rounded-2xl cursor-pointer bg-slate-50/50 hover:bg-indigo-50/30 hover:border-indigo-400 group">
+                                    <div className="flex flex-col items-center justify-center py-4">
+                                        <div className="w-10 h-10 mb-2 rounded-full bg-indigo-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                        </div>
+                                        <p className="text-xs font-semibold text-slate-700">
+                                            <span className="text-indigo-600 hover:underline">Click to browse</span> or drag image here
+                                        </p>
+                                        <p className="text-[11px] text-slate-400 mt-0.5">PNG, JPG, WEBP, GIF up to 5MB</p>
                                     </div>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageChange}
+                                        className="hidden"
+                                    />
+                                </label>
+                            ) : (
+                                <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-between gap-4">
+                                    <div className="flex items-center gap-3.5 min-w-0">
+                                        <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-slate-200 shadow-sm shrink-0 bg-white">
+                                            <img
+                                                src={preview}
+                                                alt="Selected Preview"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <div className="flex items-center gap-2">
+                                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">
+                                                    ✓ Ready for Upload
+                                                </span>
+                                            </div>
+                                            <p className="text-xs font-semibold text-slate-800 mt-1 truncate">
+                                                {fileDetails?.name}
+                                            </p>
+                                            <p className="text-[11px] text-slate-400 font-medium">
+                                                Size: {fileDetails?.size}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={handleRemoveImage}
+                                        className="text-xs font-semibold text-rose-600 hover:text-rose-700 px-3 py-1.5 rounded-lg hover:bg-rose-50 transition-colors shrink-0 cursor-pointer"
+                                    >
+                                        Change / Remove
+                                    </button>
                                 </div>
                             )}
+
+                            {errors.image && <p className="text-xs text-rose-500 mt-1 font-medium">{errors.image}</p>}
                         </div>
 
                         {/* Description */}

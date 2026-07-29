@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\File;
+
 
 class ProductController extends Controller
 {
@@ -37,8 +39,23 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price'       => 'required|numeric|min:0',
             'stock'       => 'required|integer|min:0',
-            'image'       => 'nullable|string',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
         ]);
+        if ($request->hasFile('image')) {
+            $destinationPath = public_path('uploads/products');
+
+            // Create directory if it doesn't exist
+            if (!File::exists($destinationPath)) {
+                File::makeDirectory($destinationPath, 0755, true);
+            }
+
+            $image = $request->file('image');
+            $fileName = time() . '_' . $image->getClientOriginalName();
+
+            $image->move($destinationPath, $fileName);
+
+            $validated['image'] = 'uploads/products/' . $fileName;
+        }
 
         Product::create($validated);
 
@@ -58,7 +75,9 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        return Inertia::render('Products/Edit', [
+            'product' => $product,
+        ]);
     }
 
     /**
@@ -74,6 +93,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+        return redirect()->back();
     }
 }

@@ -8,11 +8,11 @@ const styles = {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "40px 16px",
+        padding: "20px 16px",
     },
     card: {
         width: "100%",
-        maxWidth: "860px",
+        maxWidth: "1000px",
         background: "#fff",
         borderRadius: "20px",
         boxShadow: "0 25px 60px rgba(0,0,0,0.2)",
@@ -220,8 +220,31 @@ export default function Index({ products = [] }) {
                                             </span>
                                         </td>
                                         <td style={styles.td}>
-                                            
+                                            <Link href={product.image} target="_blank">
+                                                <img src={product.image} alt={product.name} style={{ width: "100px", height: "100px", objectFit: "cover" }} />
+                                            </Link>
+
                                         </td>
+                                        <td style={styles.td}>
+                                            <Link href={`/products/${product.id}/edit`}>
+                                                <button className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white text-sm font-semibold rounded-xl shadow-md shadow-indigo-500/25 hover:shadow-lg hover:shadow-indigo-500/35 hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer">
+                                                    <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                                    </svg>
+                                                    <span>Edit</span>
+                                                </button>
+                                            </Link>
+                                            <Link href={`/products/${product.id}/delete`} method="delete" as="button">
+                                                <button className="inline-flex items-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-700 active:scale-[0.98] text-white text-sm font-semibold rounded-xl shadow-md shadow-red-500/25 hover:shadow-lg hover:shadow-red-500/35 hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 cursor-pointer">
+                                                    <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                                    </svg>
+                                                    <span>Delete</span>
+                                                </button>
+                                            </Link>
+
+                                        </td>
+
 
                                     </tr>
                                 ))}
