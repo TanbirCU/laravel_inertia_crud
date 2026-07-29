@@ -130,6 +130,8 @@ const styles = {
         color: "#9ca3af",
         fontSize: "14px",
     },
+   
+    
 };
 
 function getStockBadge(stock) {
@@ -151,6 +153,14 @@ export default function Index({ products = [] }) {
                         <h1 style={styles.title}>📦 Product Inventory</h1>
                         <p style={styles.subtitle}>Manage and track your active products</p>
                     </div>
+                    <Link href="/products/create">
+                        <button className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white text-sm font-semibold rounded-xl shadow-md shadow-indigo-500/25 hover:shadow-lg hover:shadow-indigo-500/35 hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer">
+                            <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                            <span>Add Product</span>
+                        </button>
+                    </Link>
                     <span style={styles.badge}>{products.length} Items</span>
                 </div>
 
