@@ -14,7 +14,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $data['clients'] = Client::paginate(10);
+        $data['clients'] = Client::orderBy('id', 'desc')->paginate(10);
         return Inertia::render('clients/index', $data);
     }
 
@@ -31,7 +31,17 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required',
+            'address' => 'required',
+        ]);
+
+        Client::create($validated);
+
+        return redirect()->route('clients.index')
+            ->with('success', 'Client created successfully.');
     }
 
     /**
@@ -47,7 +57,8 @@ class ClientController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $data['client'] = Client::find($id);
+        return Inertia::render('clients/edit', $data);
     }
 
     /**
@@ -55,7 +66,16 @@ class ClientController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+           $validated = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required',
+            'address' => 'required',
+        ]);
+        $client = Client::find($id);
+        $client->update($validated);
+        return redirect()->route('clients.index')
+            ->with('success', 'Client updated successfully.');
     }
 
     /**
@@ -63,6 +83,8 @@ class ClientController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $client = Client::find($id);
+        $client->delete();
+        return redirect()->route('clients.index');
     }
 }

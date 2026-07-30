@@ -137,12 +137,12 @@ const errorInputStyle = {
     background: "#fef2f2",
 };
 
-export default function Create() {
-    const { data, setData, post, processing, errors } = useForm({
-        name: "",
-        email: "",
-        phone: "",
-        address: "",
+export default function Edit({ client }) {
+    const { data, setData, put, processing, errors } = useForm({
+        name: client?.name || "",
+        email: client?.email || "",
+        phone: client?.phone || "",
+        address: client?.address || "",
     });
 
     const [focused, setFocused] = useState({});
@@ -158,11 +158,11 @@ export default function Create() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post("/clients", {
+        put(`/clients/${client.id}`, {
             onSuccess: () => {
                 Swal.fire({
-                    title: "Created!",
-                    text: "Client created successfully!",
+                    title: "Updated!",
+                    text: "Client updated successfully!",
                     icon: "success",
                     timer: 1800,
                     showConfirmButton: false,
@@ -181,8 +181,8 @@ export default function Create() {
                     {/* Header */}
                     <div style={styles.cardHeader}>
                         <div>
-                            <h1 style={styles.headerTitle}>Add New Client</h1>
-                            <p style={styles.headerSub}>Create a new client profile</p>
+                            <h1 style={styles.headerTitle}>Edit Client</h1>
+                            <p style={styles.headerSub}>Modify client information details</p>
                         </div>
                         <Link href="/clients" style={styles.backLink}>
                             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -310,9 +310,9 @@ export default function Create() {
                                 onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "translateY(0)"; }}
                             >
                                 <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 6.223M20 4v5h-5" />
                                 </svg>
-                                {processing ? "Creating..." : "Create Client"}
+                                {processing ? "Updating..." : "Update Client"}
                             </button>
                         </form>
                     </div>

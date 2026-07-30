@@ -1,4 +1,5 @@
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
+import Swal from "sweetalert2";
 import Layout from "../../components/Layout";
 
 const styles = {
@@ -185,7 +186,40 @@ const styles = {
 
 export default function Index({ clients = { data: [], links: [] } }) {
     const clientList = clients.data || [];
-
+    const handleDelete = (client) => {
+           Swal.fire({
+               title: "Are you sure?",
+               text: `Do you really want to delete "${client.name}"? This action cannot be undone!`,
+               icon: "warning",
+               showCancelButton: true,
+               confirmButtonColor: "#e11d48",
+               cancelButtonColor: "#64748b",
+               confirmButtonText: "Yes, Delete It",
+               cancelButtonText: "Cancel",
+               customClass: {
+                   popup: "rounded-2xl shadow-2xl border border-slate-100",
+                   confirmButton: "px-5 py-2.5 rounded-xl font-semibold text-sm cursor-pointer",
+                   cancelButton: "px-5 py-2.5 rounded-xl font-semibold text-sm cursor-pointer",
+               },
+           }).then((result) => {
+               if (result.isConfirmed) {
+                   router.delete(`/clients/${client.id}`, {
+                       onSuccess: () => {
+                           Swal.fire({
+                               title: "Deleted!",
+                               text: `"${client.name}" has been deleted.`,
+                               icon: "success",
+                               timer: 1800,
+                               showConfirmButton: false,
+                               customClass: {
+                                   popup: "rounded-2xl shadow-2xl border border-slate-100",
+                               },
+                           });
+                       },
+                   });
+               }
+           });
+       };
     return (
         <Layout>
         <div style={styles.page}>
@@ -260,8 +294,10 @@ export default function Index({ clients = { data: [], links: [] } }) {
                                                         <span>Edit</span>
                                                     </button>
                                                 </Link>
+                                                
                                                 <button
                                                     type="button"
+                                                    onClick={() => handleDelete(client)}
                                                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-600 hover:bg-rose-700 active:scale-[0.98] text-white text-xs font-semibold rounded-lg shadow-sm hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
                                                 >
                                                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
