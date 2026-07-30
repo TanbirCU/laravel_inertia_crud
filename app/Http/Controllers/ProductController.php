@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Contact;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\File;
@@ -130,5 +131,22 @@ class ProductController extends Controller
 
         $product->delete();
         return redirect()->back();
+    }
+
+    public function contacts(){
+        return Inertia::render('contact/contact');
+    }
+
+    public function contact_store(Request $request){
+        $validated = $request->validate([
+            'name'  => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:50',
+            'query' => 'required|string',
+        ]);
+
+        Contact::create($validated);
+
+        return redirect()->route('contacts')->with('success', 'Your message has been sent!');
     }
 }

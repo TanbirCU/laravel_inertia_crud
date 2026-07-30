@@ -1,9 +1,11 @@
 import { Link, router } from "@inertiajs/react";
 import Swal from "sweetalert2";
+import Layout from "../../components/Layout";
+
 
 const styles = {
     page: {
-        minHeight: "100vh",
+        minHeight: "calc(100vh - 60px)",
         background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
         fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
         display: "flex",
@@ -181,6 +183,7 @@ export default function Index({ products = [] }) {
     };
 
     return (
+        <Layout>
         <div style={styles.page}>
             <div style={styles.card}>
                 {/* Card Header */}
@@ -300,5 +303,6 @@ export default function Index({ products = [] }) {
                 </div>
             </div>
         </div>
+        </Layout>
     );
 }
