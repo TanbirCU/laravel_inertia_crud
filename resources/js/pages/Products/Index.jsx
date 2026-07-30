@@ -9,9 +9,9 @@ const styles = {
         background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
         fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
         display: "flex",
-        alignItems: "center",
+        alignItems: "flex-start",
         justifyContent: "center",
-        padding: "20px 16px",
+        padding: "30px 16px 20px",
     },
     card: {
         width: "100%",

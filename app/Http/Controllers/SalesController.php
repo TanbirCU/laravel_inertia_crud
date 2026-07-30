@@ -3,6 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\SalesMaster;
+use App\Models\SalesDetails;
+use App\Models\Client;
+use App\Models\Product;
+use Inertia\Inertia;
+
 
 class SalesController extends Controller
 {
@@ -11,7 +17,8 @@ class SalesController extends Controller
      */
     public function index()
     {
-        //
+        $data['sales'] = SalesMaster::with('sales_details', 'client')->get();
+        return Inertia::render('sales/index', $data);
     }
 
     /**
@@ -19,7 +26,9 @@ class SalesController extends Controller
      */
     public function create()
     {
-        //
+        $data['clients'] = Client::all();
+        $data['products'] = Product::all();
+        return Inertia::render('sales/create', $data);
     }
 
     /**
