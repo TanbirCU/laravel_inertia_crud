@@ -1,5 +1,6 @@
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import Layout from "../../components/Layout";
+import Swal from "sweetalert2";
 
 const styles = {
     page: {
@@ -126,6 +127,41 @@ const styles = {
 };
 
 export default function Index({ sales = [] }) {
+    const handleDelete = (sale) => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: `Do you really want to delete invoice "${sale.invoice_no}"? This action cannot be undone!`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#e11d48",
+            cancelButtonColor: "#64748b",
+            confirmButtonText: "Yes, Delete It",
+            cancelButtonText: "Cancel",
+            customClass: {
+                popup: "rounded-2xl shadow-2xl border border-slate-100",
+                confirmButton: "px-5 py-2.5 rounded-xl font-semibold text-sm cursor-pointer",
+                cancelButton: "px-5 py-2.5 rounded-xl font-semibold text-sm cursor-pointer",
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.delete(`/sales/${sale.id}`, {
+                    onSuccess: () => {
+                        Swal.fire({
+                            title: "Deleted!",
+                            text: "Invoice has been successfully deleted.",
+                            icon: "success",
+                            timer: 1800,
+                            showConfirmButton: false,
+                            customClass: {
+                                popup: "rounded-2xl shadow-2xl border border-slate-100",
+                            },
+                        });
+                    },
+                });
+            }
+        });
+    };
+
     return (
         <Layout>
             <div style={styles.page}>
@@ -194,6 +230,15 @@ export default function Index({ sales = [] }) {
                                             </td>
                                             <td style={styles.td}>
                                                 <div className="flex items-center gap-2">
+                                                    <Link href={`/sales/${sale.id}`}>
+                                                        <button className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white text-xs font-semibold rounded-lg shadow-sm hover:-translate-y-0.5 transition-all duration-200 cursor-pointer">
+                                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                            </svg>
+                                                            <span>View</span>
+                                                        </button>
+                                                    </Link>
                                                     <Link href={`/sales/${sale.id}/edit`}>
                                                         <button className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white text-xs font-semibold rounded-lg shadow-sm hover:-translate-y-0.5 transition-all duration-200 cursor-pointer">
                                                             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -204,6 +249,7 @@ export default function Index({ sales = [] }) {
                                                     </Link>
                                                     <button
                                                         type="button"
+                                                        onClick={() => handleDelete(sale)}
                                                         className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-600 hover:bg-rose-700 active:scale-[0.98] text-white text-xs font-semibold rounded-lg shadow-sm hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
                                                     >
                                                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

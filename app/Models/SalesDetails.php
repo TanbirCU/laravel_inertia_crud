@@ -18,4 +18,9 @@ class SalesDetails extends Model
     {
         return $this->belongsTo(SalesMaster::class);
     }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }
